@@ -1,0 +1,14 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100dvw;
+}
+
+.header {
+  height: 10vh;
+}
+
+.outlined-container {
+  flex-grow: 1;
+}

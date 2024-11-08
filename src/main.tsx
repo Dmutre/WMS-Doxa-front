@@ -6,6 +6,6 @@ import { RouterProvider } from 'react-router-dom';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} fallbackElement={<div>IDI NAHUI</div>} />
+    <RouterProvider router={router} />
   </StrictMode>
 );
