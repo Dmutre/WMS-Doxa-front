@@ -1,0 +1,1 @@
+export { HeadRowTableCell } from './HeadRowTableCell';
