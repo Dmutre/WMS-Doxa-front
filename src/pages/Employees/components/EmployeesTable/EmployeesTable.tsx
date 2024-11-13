@@ -7,11 +7,11 @@ import {
   Checkbox,
   TableBody,
   TablePagination,
+  TableCell,
 } from '@mui/material';
 import { EmployeesDto } from '../../../../types/employee';
 import { useLoaderData, useSearchParams } from 'react-router-dom';
 import { EmployeesTableRow } from './components/EmployeesTableRow';
-import { HeadRowTableCell } from './components/HeadRowTableCell';
 import styles from './EmployeesTable.module.css';
 
 export const EmployeesTable = () => {
@@ -44,14 +44,17 @@ export const EmployeesTable = () => {
         <Table stickyHeader sx={{ borderRadius: '1rem' }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#F5F5F5' }}>
-              <HeadRowTableCell padding="checkbox">
+              <TableCell className={styles['head-cell']}>First name</TableCell>
+              <TableCell className={styles['head-cell']} padding="checkbox">
                 <Checkbox />
-              </HeadRowTableCell>
-              <HeadRowTableCell>First name</HeadRowTableCell>
-              <HeadRowTableCell>Last name</HeadRowTableCell>
-              <HeadRowTableCell>Phone number</HeadRowTableCell>
-              <HeadRowTableCell>Status</HeadRowTableCell>
-              <HeadRowTableCell>Role</HeadRowTableCell>
+              </TableCell>
+              <TableCell className={styles['head-cell']}></TableCell>
+              <TableCell className={styles['head-cell']}>Last name</TableCell>
+              <TableCell className={styles['head-cell']}>
+                Phone number
+              </TableCell>
+              <TableCell className={styles['head-cell']}>Status</TableCell>
+              <TableCell className={styles['head-cell']}>Role</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

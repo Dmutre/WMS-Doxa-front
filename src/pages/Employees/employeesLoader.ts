@@ -4,10 +4,10 @@ import { LoaderFunction } from 'react-router';
 export const employeesLoader: LoaderFunction = ({ request }): EmployeesDto => {
   const data = [];
   const url = new URL(request.url);
-  const page = parseInt(url.searchParams.get('page')!, 10);
-  const pageSize = parseInt(url.searchParams.get('pageSize')!, 10);
+  const page = parseInt(url.searchParams.get('page')!, 10) || 0;
+  const pageSize = parseInt(url.searchParams.get('pageSize')!, 10) || 10;
 
-  for (let i = 1; i <= 100; i++) {
+  for (let i = 1; i <= 1000; i++) {
     data.push({
       id: `${i}`,
       firstName: `${i}`,
