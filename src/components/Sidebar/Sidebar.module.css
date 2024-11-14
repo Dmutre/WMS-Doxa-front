@@ -1,0 +1,29 @@
+.container {
+  min-height: 100%;
+  background-color: #4b0082;
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navlink {
+  color: #f5f7f1;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%;
+  padding: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navlink:hover:not(.active) {
+  background-color: #00bfff;
+}
+
+.active {
+  background-color: #a4103a;
+}

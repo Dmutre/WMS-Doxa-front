@@ -1,0 +1,20 @@
+.paper {
+  box-shadow: 0.3rem 0.3rem 0.5rem 0.5rem #f5f5f5;
+  border-radius: 1rem;
+}
+
+.table-container {
+  max-height: 35rem;
+}
+
+.table {
+  border-radius: 1rem;
+}
+
+.table-head-row {
+  background-color: '#F5F5F5';
+}
+
+.head-cell {
+  background-color: inherit;
+}
