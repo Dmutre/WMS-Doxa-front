@@ -44,12 +44,11 @@ export const EmployeesTable = () => {
         <Table stickyHeader sx={{ borderRadius: '1rem' }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#F5F5F5' }}>
-              <TableCell className={styles['head-cell']}>First name</TableCell>
               <TableCell className={styles['head-cell']} padding="checkbox">
                 <Checkbox />
               </TableCell>
-              <TableCell className={styles['head-cell']}></TableCell>
-              <TableCell className={styles['head-cell']}>Last name</TableCell>
+              <TableCell className={styles['head-cell']}>Full name</TableCell>
+              <TableCell className={styles['head-cell']}>Email</TableCell>
               <TableCell className={styles['head-cell']}>
                 Phone number
               </TableCell>

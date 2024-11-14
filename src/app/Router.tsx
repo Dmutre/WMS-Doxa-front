@@ -10,10 +10,16 @@ const routes = createRoutesFromElements(
     <Route path="login" element={<Login />} action={loginAction} />
     <Route path="employees" element={<Employees />} loader={employeesLoader} />
     <Route>
-      <Route index element={<Warehouses />}></Route>
-      <Route path=":id" element={<div>Warehouse</div>} />
-      <Route path=":id/products/:id" element={<div>Product</div>} />
-      <Route path=":id/employees/:id" element={<div>Employee</div>} />
+      <Route path="warehouses" element={<Warehouses />} />
+      <Route path="warehouses/:warehouseId" element={<div>Warehouse</div>} />
+      <Route
+        path="warehouses/:warehouseId/products/:productId"
+        element={<div>Product</div>}
+      />
+      <Route
+        path="warehouses/:warehouseId/employees/:employeeId"
+        element={<div>Employee</div>}
+      />
     </Route>
   </Route>
 );
