@@ -1,8 +1,13 @@
-import { Product } from './product';
-
 export interface Warehouse {
-  id: number;
+  id: string;
   name: string;
-  location: string;
-  items: Product[];
-};
+  type: string;
+  address: string;
+  coordinates: string;
+  notes: string;
+  area: number;
+  isActive: boolean;
+  photo: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

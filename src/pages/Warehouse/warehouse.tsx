@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,77 +7,90 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { useBatchesQuery } from '../../queries/useBatches';
+import { useParams } from 'react-router';
+import { useAxios } from '../../hooks/useAxios';
+import { Product } from '../../types/product';
 
 interface Column {
-  id: 'name' | 'code' | 'quantity' | 'location' | 'category';
+  id: 'name' | 'quantity' | 'barcode' | 'description';
   label: string;
   minWidth?: number;
   align?: 'right';
-  format?: (value: number) => string;
+  format?: (value: string) => string;
 }
 
 const columns: readonly Column[] = [
   { id: 'name', label: 'Item Name', minWidth: 170 },
-  { id: 'code', label: 'Item Code', minWidth: 100 },
   {
     id: 'quantity',
     label: 'Quantity',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'location',
-    label: 'Location',
-    minWidth: 170,
+    id: 'barcode',
+    label: 'Barcode',
+    minWidth: 50,
     align: 'right',
-    format: (value: number) => value.toLocaleString('en-US'),
   },
   {
-    id: 'category',
-    label: 'Category',
+    id: 'description',
+    label: 'Description',
     minWidth: 170,
     align: 'right',
-    format: (value: number) => value.toFixed(2),
+    format: (value: string) => {
+      if (value.length > 30) {
+        return value.substring(0, 50) + '...';
+      }
+      return value;
+    },
   },
 ];
 
-interface Data {
-  name: string;
-  code: string;
-  quantity: number;
-  location: string;
-  category: string;
-}
-
-function createData(
-  name: string,
-  code: string,
-  quantity: number,
-  location: string,
-  category: string
-): Data {
-  return { name, code, quantity, location, category };
-}
-
-const rows: Data[] = [];
-
-for (let i = 0; i < 1000; i++) {
-  const random = Math.floor(Math.random() * 100);
-  rows.push(
-    createData(
-      `name ${i}`,
-      `code ${i}`,
-      random,
-      `location ${i}`,
-      `category ${i}`
-    )
-  );
-}
-
 export const Warehouse = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const axios = useAxios();
+
+  const { warehouseId } = useParams<{ warehouseId: string }>();
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [products, setProducts] = useState<(Product & { quantity: number })[]>(
+    []
+  );
+
+  const { data: batches } = useBatchesQuery({
+    warehouseId,
+  });
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!batches) return;
+
+      const productBatches = batches.map(batch => {
+        return {
+          id: batch.itemId,
+          quantity: batch.quantity,
+        };
+      });
+      try {
+        const products = await Promise.all(
+          productBatches.map(async productBatch => {
+            const { data } = await axios.get(`product/${productBatch.id}`);
+            return {
+              ...data,
+              quantity: productBatch.quantity,
+            };
+          })
+        );
+        setProducts(products);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, [axios, batches]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -108,16 +121,21 @@ export const Warehouse = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {products
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(row => {
+              .map(product => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={product.id}
+                  >
                     {columns.map(column => {
-                      const value = row[column.id];
+                      const value = product[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
+                          {column.format && typeof value === 'string'
                             ? column.format(value)
                             : value}
                         </TableCell>
@@ -132,7 +150,7 @@ export const Warehouse = () => {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={products.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

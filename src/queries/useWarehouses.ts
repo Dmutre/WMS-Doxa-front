@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAxios } from '../../hooks/useAxios';
-import { Warehouse } from '../../types/warehouse';
+import { useAxios } from '../hooks/useAxios';
+import { Warehouse } from '../types/warehouse';
 
 interface UserEventQueryProps {
   enabled?: boolean;
 }
 
-export function useUserEventsQuery({ enabled }: UserEventQueryProps = {}) {
+export function useWarehousesQuery({ enabled }: UserEventQueryProps = {}) {
   const axios = useAxios();
   return useQuery({
     queryKey: ['warehouses'],
