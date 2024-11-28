@@ -19,7 +19,7 @@ export const App = () => {
 
   return (
     <div className={styles['app-container']}>
-      {!isAuth ? (
+      {isAuth ? (
         <>
           <Sidebar />
           <main className={styles['outlined-container']}>
