@@ -11,8 +11,7 @@ export const WarehouseComponent = ({ warehouse }: WarehouseProps) => {
   return (
     <div className={styles['container']}>
       <h1>{warehouse.name}</h1>
-      <p>location: {warehouse.location}</p>
-      <p>items: {warehouse.items.length}</p>
+      <p>location: {warehouse.address}</p>
       <Button
         variant="contained"
         onClick={async () => {
