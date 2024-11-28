@@ -55,6 +55,7 @@ export const Warehouses = () => {
       ],
     },
   ];
+
   return (
     <div className={styles['container']}>
       {mockedWarehouses.map(warehouse => (
