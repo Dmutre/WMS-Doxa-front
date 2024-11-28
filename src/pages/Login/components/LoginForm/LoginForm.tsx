@@ -23,7 +23,7 @@ export const LoginForm = () => {
     });
     login(data.token);
     localStorage.setItem('accessToken', data.token);
-    navigate('/warehouses');
+    navigate('/warehouses', { replace: true });
   };
 
   return (
