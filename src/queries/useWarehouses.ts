@@ -11,7 +11,12 @@ export function useWarehousesQuery({ enabled }: UserEventQueryProps = {}) {
   return useQuery({
     queryKey: ['warehouses'],
     queryFn: async () => {
-      const { data } = await axios.get<Warehouse[]>('warehouse');
+      const { data } = await axios.get<Warehouse[]>('warehouse', {
+        params: {
+          page: 1,
+          pageSize: 10,
+        },
+      });
       return data;
     },
     enabled,
