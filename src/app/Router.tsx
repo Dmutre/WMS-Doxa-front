@@ -7,7 +7,7 @@ import { Employees, employeesLoader } from '../pages/Employees';
 import { Warehouse } from '../pages/Warehouse/warehouse';
 
 const routes = createRoutesFromElements(
-  <Route path="/" element={<App />} errorElement={<div>IDI NAHUI</div>}>
+  <Route path="/" element={<App />} errorElement={<div>ERROR</div>}>
     <Route path="login" element={<Login />} />
     <Route path="employees" element={<Employees />} loader={employeesLoader} />
     <Route>
