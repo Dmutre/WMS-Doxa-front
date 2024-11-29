@@ -7,9 +7,13 @@ export const Warehouses = () => {
 
   return (
     <div className={styles['container']}>
-      {warehouses?.map(warehouse => (
-        <WarehouseComponent warehouse={warehouse} />
-      ))}
+      {warehouses?.length && warehouses.length > 0 ? (
+        warehouses.map(warehouse => (
+          <WarehouseComponent warehouse={warehouse} />
+        ))
+      ) : (
+        <div>No warehouses found</div>
+      )}
     </div>
   );
 };

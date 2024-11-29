@@ -6,18 +6,23 @@ interface UserEventQueryProps {
   enabled?: boolean;
 }
 
+interface WarehousesResponse {
+  data: Warehouse[];
+  total: number;
+}
+
 export function useWarehousesQuery({ enabled }: UserEventQueryProps = {}) {
   const axios = useAxios();
   return useQuery({
     queryKey: ['warehouses'],
     queryFn: async () => {
-      const { data } = await axios.get<Warehouse[]>('warehouse', {
+      const { data } = await axios.get<WarehousesResponse>('warehouse', {
         params: {
           page: 1,
           pageSize: 10,
         },
       });
-      return data;
+      return data.data;
     },
     enabled,
   });
