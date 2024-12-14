@@ -1,3 +1,4 @@
+import { useDeleteWarehouseMutation } from '../../mutations/warehouse';
 import { useWarehousesQuery } from '../../queries/useWarehouses';
 import { WarehouseModal } from './components/Modal';
 import { WarehouseComponent } from './components/Warehouse';
@@ -5,16 +6,26 @@ import styles from './warehouses.module.css';
 import { useState } from 'react';
 
 export const Warehouses = () => {
-  const { data: warehouses } = useWarehousesQuery();
+  const { data: warehouses, refetch } = useWarehousesQuery();
   const [open, setOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<string | false>(false);
+  const { mutate: deleteWarehouse } = useDeleteWarehouseMutation({
+    onSuccess: () => {
+      refetch();
+    },
+    onError: () => {
+      alert('Something went wrong');
+    },
+  });
 
   const handleOpenCreateWarehouseModal = () => {
+    refetch();
     setOpen(true);
     setIsEditing(false);
   };
 
   const handleOpenEditWarehouseModal = (warehouseId: string) => {
+    refetch();
     setOpen(true);
     setIsEditing(warehouseId);
   };
@@ -36,6 +47,9 @@ export const Warehouses = () => {
             <WarehouseComponent
               warehouse={warehouse}
               editWarehouse={handleOpenEditWarehouseModal}
+              deleteWarehouse={() =>
+                deleteWarehouse({ warehouseId: warehouse.id })
+              }
             />
           ))
         ) : (

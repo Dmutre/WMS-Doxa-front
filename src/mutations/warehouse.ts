@@ -3,7 +3,7 @@ import { useAxios } from '../hooks/useAxios';
 import { Warehouse } from '../types/warehouse';
 
 interface WarehouseMutationProps {
-  onSuccess?: (data: Warehouse) => void;
+  onSuccess?: (data: Warehouse | void) => void;
   onError?: (error: any) => void;
 }
 
@@ -100,6 +100,21 @@ export function useEditWarehouseMutation({
         }
       );
       return data.data;
+    },
+    onSuccess,
+    onError,
+  });
+}
+
+export function useDeleteWarehouseMutation({
+  onSuccess,
+  onError,
+}: WarehouseMutationProps = {}) {
+  const axios = useAxios();
+  return useMutation({
+    mutationKey: ['deleteWarehouse'],
+    mutationFn: async ({ warehouseId }: { warehouseId: string }) => {
+      await axios.delete(`warehouse/${warehouseId}`);
     },
     onSuccess,
     onError,

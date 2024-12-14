@@ -6,11 +6,13 @@ import styles from './Warehouse.module.css';
 interface WarehouseProps {
   warehouse: Warehouse;
   editWarehouse: (warehouseId: string) => void;
+  deleteWarehouse: (warehouseId: string) => void;
 }
 
 export const WarehouseComponent = ({
   warehouse,
   editWarehouse,
+  deleteWarehouse,
 }: WarehouseProps) => {
   return (
     <div className={styles['container']}>
@@ -32,6 +34,14 @@ export const WarehouseComponent = ({
           }}
         >
           Edit
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            deleteWarehouse(warehouse.id);
+          }}
+        >
+          Delete
         </Button>
       </div>
     </div>
