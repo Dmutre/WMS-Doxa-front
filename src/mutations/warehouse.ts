@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useAxios } from '../hooks/useAxios';
 import { Warehouse } from '../types/warehouse';
 
-interface useAddWarehouseMutationProps {
+interface WarehouseMutationProps {
   onSuccess?: (data: Warehouse) => void;
   onError?: (error: any) => void;
 }
@@ -18,6 +18,18 @@ interface AddWarehouseMutationProps {
   photo: string;
 }
 
+interface EditWarehouseMutationProps {
+  name: string;
+  type: string;
+  address: string;
+  coordinates: string;
+  notes: string;
+  area: number;
+  isActive: boolean;
+  photo: string;
+  warehouseId: string;
+}
+
 interface WarehousesResponse {
   data: Warehouse;
 }
@@ -25,7 +37,7 @@ interface WarehousesResponse {
 export function useAddWarehouseMutation({
   onSuccess,
   onError,
-}: useAddWarehouseMutationProps = {}) {
+}: WarehouseMutationProps = {}) {
   const axios = useAxios();
   return useMutation({
     mutationKey: ['addWarehouse'],
@@ -49,6 +61,44 @@ export function useAddWarehouseMutation({
         isActive,
         photo,
       });
+      return data.data;
+    },
+    onSuccess,
+    onError,
+  });
+}
+
+export function useEditWarehouseMutation({
+  onSuccess,
+  onError,
+}: WarehouseMutationProps = {}) {
+  const axios = useAxios();
+  return useMutation({
+    mutationKey: ['editWarehouse'],
+    mutationFn: async ({
+      name,
+      type,
+      address,
+      coordinates,
+      notes,
+      area,
+      isActive,
+      photo,
+      warehouseId,
+    }: EditWarehouseMutationProps) => {
+      const { data } = await axios.put<WarehousesResponse>(
+        `warehouse/${warehouseId}`,
+        {
+          name,
+          type,
+          address,
+          coordinates,
+          notes,
+          area,
+          isActive,
+          photo,
+        }
+      );
       return data.data;
     },
     onSuccess,
