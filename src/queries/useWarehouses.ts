@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAxios } from '../hooks/useAxios';
 import { Warehouse } from '../types/warehouse';
 
-interface UserEventQueryProps {
+interface WarehouseQueryProps {
   enabled?: boolean;
 }
 
@@ -11,7 +11,7 @@ interface WarehousesResponse {
   total: number;
 }
 
-export function useWarehousesQuery({ enabled }: UserEventQueryProps = {}) {
+export function useWarehousesQuery({ enabled }: WarehouseQueryProps = {}) {
   const axios = useAxios();
   return useQuery({
     queryKey: ['warehouses'],
