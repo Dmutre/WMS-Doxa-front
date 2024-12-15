@@ -34,8 +34,6 @@ export const EmployeesTable = () => {
     setPage(0);
   };
 
-  console.log(pageSize);
-
   if (isLoading) {
     return (
       <div
@@ -45,11 +43,13 @@ export const EmployeesTable = () => {
           gap: '1rem',
         }}
       >
-        <Skeleton variant="rounded" animation="wave" height={100} />
-        <Skeleton variant="rounded" animation="wave" height={100} />
-        <Skeleton variant="rounded" animation="wave" height={100} />
-        <Skeleton variant="rounded" animation="wave" height={100} />
-        <Skeleton variant="rounded" animation="wave" height={100} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
+        <Skeleton variant="rounded" animation="wave" height={50} />
       </div>
     );
   }
