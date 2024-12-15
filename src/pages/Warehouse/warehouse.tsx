@@ -42,18 +42,13 @@ const columns: readonly Column[] = [
     label: 'Description',
     minWidth: 170,
     align: 'right',
-    format: (value: string) => {
-      if (value.length > 30) {
-        return value.substring(0, 50) + '...';
-      }
-      return value;
-    },
+    format: (value: string) =>
+      value.length > 30 ? value.substring(0, 50) + '...' : value,
   },
 ];
 
 export const Warehouse = () => {
   const axios = useAxios();
-
   const { warehouseId } = useParams<{ warehouseId: string }>();
 
   const [page, setPage] = useState(0);
@@ -61,43 +56,38 @@ export const Warehouse = () => {
   const [products, setProducts] = useState<(Product & { quantity: number })[]>(
     []
   );
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState<string | false>(false);
 
-  const { data: batches, refetch } = useBatchesQuery({
+  const { data: batches, refetch: refetchBatches } = useBatchesQuery({
     warehouseId,
   });
+  const { data: allProducts } = useProductsQuery({ enabled: open });
 
-  const { data: allProducts } = useProductsQuery({
-    enabled: open,
-  });
-
-  const notAddedProducts = useMemo(
-    () =>
-      allProducts?.filter(product => !products.some(p => p.id === product.id)),
-    [allProducts, products]
-  );
+  const notAddedProducts = useMemo(() => {
+    if (!allProducts) return [];
+    return allProducts.filter(
+      product => !products.some(p => p.id === product.id)
+    );
+  }, [allProducts, products]);
 
   const fetchProducts = useCallback(async () => {
-    if (!batches) return;
+    if (!batches || !axios) return;
 
-    const productBatches = batches.map(batch => {
-      return {
+    try {
+      const productBatches = batches.map(batch => ({
         id: batch.itemId,
         quantity: batch.quantity,
-      };
-    });
-    try {
-      const products = await Promise.all(
-        productBatches.map(async productBatch => {
-          const { data } = await axios.get(`product/${productBatch.id}`);
-          return {
-            ...data,
-            quantity: productBatch.quantity,
-          };
+      }));
+
+      const fetchedProducts = await Promise.all(
+        productBatches.map(async ({ id, quantity }) => {
+          const { data } = await axios.get(`item/${id}`);
+          return { ...data, quantity };
         })
       );
-      setProducts(products);
+
+      setProducts(fetchedProducts);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -105,12 +95,9 @@ export const Warehouse = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [axios, batches]);
+  }, [batches]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
+  const handleChangePage = (_: unknown, newPage: number) => setPage(newPage);
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -145,27 +132,25 @@ export const Warehouse = () => {
               <TableBody>
                 {products
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map(product => {
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        tabIndex={-1}
-                        key={product.id}
-                      >
-                        {columns.map(column => {
-                          const value = product[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === 'string'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
+                  .map(product => (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={product.id}
+                    >
+                      {columns.map(column => {
+                        const value = product[column.id];
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {column.format && typeof value === 'string'
+                              ? column.format(value)
+                              : value}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -186,7 +171,11 @@ export const Warehouse = () => {
         open={open}
         isEditing={isEditing}
         notAddedProducts={notAddedProducts}
-        refetch={refetch}
+        warehouseId={warehouseId}
+        refetch={() => {
+          refetchBatches();
+          fetchProducts();
+        }}
         setOpen={setOpen}
       />
     </div>

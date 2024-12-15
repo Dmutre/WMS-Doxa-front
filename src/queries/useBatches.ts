@@ -16,6 +16,11 @@ interface UserEventQueryProps {
   pageSize?: number;
 }
 
+interface BatchResponse {
+  data: Batch[];
+  total: number;
+}
+
 export function useBatchesQuery({
   warehouseId,
   itemId,
@@ -26,14 +31,14 @@ export function useBatchesQuery({
   orderBy,
   orderDirection,
   enabled,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = 10,
 }: UserEventQueryProps = {}) {
   const axios = useAxios();
   return useQuery({
     queryKey: ['batch'],
     queryFn: async () => {
-      const { data } = await axios.get<Batch[]>('batch', {
+      const { data } = await axios.get<BatchResponse>('batch', {
         params: {
           warehouseId,
           itemId,
@@ -47,7 +52,8 @@ export function useBatchesQuery({
           pageSize,
         },
       });
-      return data;
+      console.log('data2', data);
+      return data.data;
     },
     enabled,
   });

@@ -9,20 +9,22 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import styles from './Modal.module.css';
-import { useAddWarehouseMutation } from '../../../mutations/warehouse';
 import { Product } from '../../../types/product';
 import { useAddProductMutation } from '../../../mutations/products';
+import { useAddBatchMutation } from '../../../mutations/batches';
 
 export const AddProductToWarehouseModal = ({
   open,
   isEditing,
   notAddedProducts,
+  warehouseId,
   refetch,
   setOpen,
 }: {
   open: boolean;
   isEditing: false | string;
   notAddedProducts: Product[] | undefined;
+  warehouseId: string | undefined;
   refetch: () => void;
   setOpen: (open: boolean) => void;
 }) => {
@@ -42,10 +44,10 @@ export const AddProductToWarehouseModal = ({
 
   const action = isEditing ? 'Edit' : 'Add';
 
-  const { mutate: addWarehouse } = useAddWarehouseMutation({
+  const { mutate: addProduct } = useAddProductMutation({
     onSuccess: () => {
-      refetch();
       setOpen(false);
+      setIsCreatingAProduct(false);
       setProduct('');
       setQuantity('');
     },
@@ -54,10 +56,10 @@ export const AddProductToWarehouseModal = ({
     },
   });
 
-  const { mutate: addProduct } = useAddProductMutation({
+  const { mutate: addBatch } = useAddBatchMutation({
     onSuccess: () => {
       setOpen(false);
-      setIsCreatingAProduct(false);
+      refetch();
       setProduct('');
       setQuantity('');
     },
@@ -82,24 +84,20 @@ export const AddProductToWarehouseModal = ({
       return;
     }
 
-    addWarehouse({
-      name: product,
-      address: quantity,
-      type: 'Warehouse',
-      coordinates: '-122.4194,37.7749',
-      notes: 'This is a test warehouse',
-      area: 100,
-      isActive: true,
-      photo: 'test',
+    if (!warehouseId) return;
+    addBatch({
+      itemId: product,
+      warehouseId,
+      quantity: Number(quantity),
     });
   };
 
-  const handleProductChange = (event: SelectChangeEvent<HTMLInputElement>) => {
-    setProduct(event.target.value as string);
+  const handleProductChange = (e: SelectChangeEvent<string>) => {
+    setProduct(e.target.value);
   };
 
   return (
-    <Modal open={open !== false} onClose={() => setOpen(false)}>
+    <Modal open={open} onClose={() => setOpen(false)}>
       <div
         className={styles['addWarehouseModalContainer']}
         onClick={() => {
@@ -116,10 +114,11 @@ export const AddProductToWarehouseModal = ({
               <h1>Add Product to Warehouse</h1>
               <InputLabel id="name-label">Product</InputLabel>
               <div className={styles['select-container']}>
-                <Select
+                <Select<string>
                   className={styles['select']}
                   labelId="name-label"
                   name="Product"
+                  value={product}
                   onChange={handleProductChange}
                   label="Product"
                 >
