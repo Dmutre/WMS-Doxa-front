@@ -58,7 +58,7 @@ export function useEditBatchMutation({
       quantity,
       batchId,
     }: EditBatchMutationProps) => {
-      const { data } = await axios.put<BatchResponse>(`item/${batchId}`, {
+      const { data } = await axios.put<BatchResponse>(`batch/${batchId}`, {
         itemId,
         warehouseId,
         quantity,
@@ -78,7 +78,7 @@ export function useDeleteBatchMutation({
   return useMutation({
     mutationKey: ['deleteBatch'],
     mutationFn: async ({ batchId }: { batchId: string }) => {
-      await axios.delete(`item/${batchId}`);
+      await axios.delete(`batch/${batchId}`);
     },
     onSuccess,
     onError,

@@ -14,9 +14,11 @@ import styles from './warehouse.module.css';
 import { Button } from '@mui/material';
 import { AddProductToWarehouseModal } from './components/Modal';
 import { useProductsQuery } from '../../queries/useProducts';
+import { useDeleteProductMutation } from '../../mutations/products';
+import { useDeleteBatchMutation } from '../../mutations/batches';
 
 interface Column {
-  id: 'name' | 'quantity' | 'barcode' | 'description';
+  id: 'name' | 'quantity' | 'barcode' | 'description' | 'actions';
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -45,6 +47,12 @@ const columns: readonly Column[] = [
     format: (value: string) =>
       value.length > 30 ? value.substring(0, 50) + '...' : value,
   },
+  {
+    id: 'actions',
+    label: 'Actions',
+    minWidth: 170,
+    align: 'right',
+  },
 ];
 
 export const Warehouse = () => {
@@ -63,6 +71,15 @@ export const Warehouse = () => {
     warehouseId,
   });
   const { data: allProducts } = useProductsQuery({ enabled: open });
+
+  const { mutate: deleteBatch } = useDeleteBatchMutation({
+    onSuccess: () => {
+      refetchBatches();
+    },
+    onError: () => {
+      alert('Something went wrong');
+    },
+  });
 
   const notAddedProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -140,6 +157,32 @@ export const Warehouse = () => {
                       key={product.id}
                     >
                       {columns.map(column => {
+                        if (column.id === 'actions') {
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              <Button
+                                variant="contained"
+                                onClick={() => {
+                                  const batch = batches?.find(
+                                    batch => batch.itemId === product.id
+                                  );
+                                  if (!batch) return;
+                                  deleteBatch({ batchId: batch.id });
+                                }}
+                              >
+                                Delete
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={() => {
+                                  // TODO: edit product
+                                }}
+                              >
+                                Edit
+                              </Button>
+                            </TableCell>
+                          );
+                        }
                         const value = product[column.id];
                         return (
                           <TableCell key={column.id} align={column.align}>

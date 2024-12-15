@@ -124,12 +124,10 @@ export const AddProductToWarehouseModal = ({
                 >
                   {notAddedProducts?.map(product => (
                     <MenuItem value={product.id} key={product.id}>
+                      // TODO: add actions here:
                       {product.name ? product.name : 'not named'}
                     </MenuItem>
                   ))}
-                  <MenuItem value="John">John</MenuItem>
-                  <MenuItem value="Jane">Jane</MenuItem>
-                  <MenuItem value="Doe">Doe</MenuItem>
                 </Select>
                 <Button
                   onClick={() => setIsCreatingAProduct(true)}
