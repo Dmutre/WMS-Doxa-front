@@ -18,17 +18,9 @@ interface AddWarehouseMutationProps {
   photo: string;
 }
 
-interface EditWarehouseMutationProps {
-  name: string;
-  type: string;
-  address: string;
-  coordinates: string;
-  notes: string;
-  area: number;
-  isActive: boolean;
-  photo: string;
+type EditWarehouseMutationProps = AddWarehouseMutationProps & {
   warehouseId: string;
-}
+};
 
 interface WarehousesResponse {
   data: Warehouse;

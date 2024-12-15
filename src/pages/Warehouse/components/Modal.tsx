@@ -9,11 +9,9 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import styles from './Modal.module.css';
-import {
-  useAddWarehouseMutation,
-  useEditWarehouseMutation,
-} from '../../../mutations/warehouse';
+import { useAddWarehouseMutation } from '../../../mutations/warehouse';
 import { Product } from '../../../types/product';
+import { useAddProductMutation } from '../../../mutations/products';
 
 export const AddProductToWarehouseModal = ({
   open,
@@ -56,9 +54,10 @@ export const AddProductToWarehouseModal = ({
     },
   });
 
-  const { mutate: editWarehouse } = useEditWarehouseMutation({
+  const { mutate: addProduct } = useAddProductMutation({
     onSuccess: () => {
       setOpen(false);
+      setIsCreatingAProduct(false);
       setProduct('');
       setQuantity('');
     },
@@ -68,17 +67,17 @@ export const AddProductToWarehouseModal = ({
   });
 
   const handleSubmit = async () => {
-    if (isEditing) {
-      editWarehouse({
-        name: product,
-        address: quantity,
-        type: 'Warehouse',
-        coordinates: '-122.4194,37.7749',
-        notes: 'This is a test warehouse',
-        area: 100,
-        isActive: true,
-        photo: 'test',
-        warehouseId: isEditing,
+    if (isCreatingAProduct) {
+      addProduct({
+        name,
+        sku,
+        description,
+        barcode,
+        weight,
+        dimensions,
+        category,
+        manufacturer,
+        originCountry,
       });
       return;
     }
@@ -126,7 +125,7 @@ export const AddProductToWarehouseModal = ({
                 >
                   {notAddedProducts?.map(product => (
                     <MenuItem value={product.id} key={product.id}>
-                      {product.name}
+                      {product.name ? product.name : 'not named'}
                     </MenuItem>
                   ))}
                   <MenuItem value="John">John</MenuItem>
@@ -170,7 +169,6 @@ export const AddProductToWarehouseModal = ({
                 variant="outlined"
                 value={sku}
                 onChange={e => setSku(e.target.value)}
-                type="number"
               />
               <TextField
                 name="Description"

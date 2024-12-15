@@ -15,6 +15,10 @@ interface UserEventQueryProps {
   pageSize?: number;
 }
 
+interface ProductResponse {
+  data: Product[];
+}
+
 export function useProductsQuery({
   name,
   sku,
@@ -24,14 +28,14 @@ export function useProductsQuery({
   orderBy,
   orderDirection,
   enabled,
-  page,
-  pageSize,
+  page = 1,
+  pageSize = 10,
 }: UserEventQueryProps = {}) {
   const axios = useAxios();
   return useQuery({
     queryKey: ['products'],
     queryFn: async () => {
-      const { data } = await axios.get<Product[]>('item', {
+      const { data } = await axios.get<ProductResponse>('item', {
         params: {
           name,
           sku,
@@ -44,7 +48,7 @@ export function useProductsQuery({
           pageSize,
         },
       });
-      return data;
+      return data.data;
     },
     enabled,
   });
