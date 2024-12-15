@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,6 +13,7 @@ import { Product } from '../../types/product';
 import styles from './warehouse.module.css';
 import { Button } from '@mui/material';
 import { AddProductToWarehouseModal } from './components/Modal';
+import { useProductsQuery } from '../../queries/useProducts';
 
 interface Column {
   id: 'name' | 'quantity' | 'barcode' | 'description';
@@ -66,6 +67,16 @@ export const Warehouse = () => {
   const { data: batches, refetch } = useBatchesQuery({
     warehouseId,
   });
+
+  const { data: allProducts } = useProductsQuery({
+    enabled: open,
+  });
+
+  const notAddedProducts = useMemo(
+    () =>
+      allProducts?.filter(product => !products.some(p => p.id === product.id)),
+    [allProducts, products]
+  );
 
   const fetchProducts = useCallback(async () => {
     if (!batches) return;
@@ -174,6 +185,7 @@ export const Warehouse = () => {
       <AddProductToWarehouseModal
         open={open}
         isEditing={isEditing}
+        notAddedProducts={notAddedProducts}
         refetch={refetch}
         setOpen={setOpen}
       />
