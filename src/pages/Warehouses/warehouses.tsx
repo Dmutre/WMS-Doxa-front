@@ -56,7 +56,12 @@ export const Warehouses = () => {
           <div>No warehouses found</div>
         )}
       </div>
-      <WarehouseModal open={open} isEditing={isEditing} setOpen={setOpen} />
+      <WarehouseModal
+        open={open}
+        isEditing={isEditing}
+        refetch={refetch}
+        setOpen={setOpen}
+      />
     </div>
   );
 };

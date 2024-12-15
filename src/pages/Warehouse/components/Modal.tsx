@@ -1,4 +1,12 @@
-import { Button, Modal, TextField } from '@mui/material';
+import {
+  Button,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  SelectChangeEvent,
+  TextField,
+} from '@mui/material';
 import { useState } from 'react';
 import styles from './Modal.module.css';
 import {
@@ -6,7 +14,7 @@ import {
   useEditWarehouseMutation,
 } from '../../../mutations/warehouse';
 
-export const WarehouseModal = ({
+export const AddProductToWarehouseModal = ({
   open,
   isEditing,
   refetch,
@@ -17,8 +25,8 @@ export const WarehouseModal = ({
   refetch: () => void;
   setOpen: (open: boolean) => void;
 }) => {
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
+  const [product, setProduct] = useState('');
+  const [quantity, setQuantity] = useState('');
 
   const action = isEditing ? 'Edit' : 'Add';
 
@@ -26,8 +34,8 @@ export const WarehouseModal = ({
     onSuccess: () => {
       refetch();
       setOpen(false);
-      setName('');
-      setAddress('');
+      setProduct('');
+      setQuantity('');
     },
     onError: () => {
       alert('Something went wrong');
@@ -37,8 +45,8 @@ export const WarehouseModal = ({
   const { mutate: editWarehouse } = useEditWarehouseMutation({
     onSuccess: () => {
       setOpen(false);
-      setName('');
-      setAddress('');
+      setProduct('');
+      setQuantity('');
     },
     onError: () => {
       alert('Something went wrong');
@@ -48,8 +56,8 @@ export const WarehouseModal = ({
   const handleSubmit = async () => {
     if (isEditing) {
       editWarehouse({
-        name,
-        address,
+        name: product,
+        address: quantity,
         type: 'Warehouse',
         coordinates: '-122.4194,37.7749',
         notes: 'This is a test warehouse',
@@ -62,8 +70,8 @@ export const WarehouseModal = ({
     }
 
     addWarehouse({
-      name,
-      address,
+      name: product,
+      address: quantity,
       type: 'Warehouse',
       coordinates: '-122.4194,37.7749',
       notes: 'This is a test warehouse',
@@ -72,6 +80,11 @@ export const WarehouseModal = ({
       photo: 'test',
     });
   };
+
+  const handleProductChange = (event: SelectChangeEvent<HTMLInputElement>) => {
+    setProduct(event.target.value as string);
+  };
+
   return (
     <Modal open={open !== false} onClose={() => setOpen(false)}>
       <div
@@ -82,20 +95,25 @@ export const WarehouseModal = ({
           className={styles['addWarehouseModal']}
           onClick={e => e.stopPropagation()}
         >
-          <h1>{action} Warehouse</h1>
+          <h1>Add Product to Warehouse</h1>
+          <InputLabel id="name-label">Product</InputLabel>
+          <Select
+            labelId="name-label"
+            name="Product"
+            onChange={handleProductChange}
+            label="Product"
+          >
+            <MenuItem value="John">John</MenuItem>
+            <MenuItem value="Jane">Jane</MenuItem>
+            <MenuItem value="Doe">Doe</MenuItem>
+          </Select>
           <TextField
-            name="name"
-            label="Name"
+            name="Quantity"
+            label="Quantity"
             variant="outlined"
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
-          <TextField
-            name="Address"
-            label="Address"
-            variant="outlined"
-            value={address}
-            onChange={e => setAddress(e.target.value)}
+            value={quantity}
+            onChange={e => setQuantity(e.target.value)}
+            type="number"
           />
           <Button variant="contained" onClick={handleSubmit}>
             {action}

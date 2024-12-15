@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import Paper from '@mui/material/Paper';
+import { useEffect, useState, useCallback } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,6 +10,9 @@ import { useBatchesQuery } from '../../queries/useBatches';
 import { useParams } from 'react-router';
 import { useAxios } from '../../hooks/useAxios';
 import { Product } from '../../types/product';
+import styles from './warehouse.module.css';
+import { Button } from '@mui/material';
+import { AddProductToWarehouseModal } from './components/Modal';
 
 interface Column {
   id: 'name' | 'quantity' | 'barcode' | 'description';
@@ -58,37 +60,39 @@ export const Warehouse = () => {
   const [products, setProducts] = useState<(Product & { quantity: number })[]>(
     []
   );
+  const [open, setOpen] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<string | false>(false);
 
-  const { data: batches } = useBatchesQuery({
+  const { data: batches, refetch } = useBatchesQuery({
     warehouseId,
   });
 
+  const fetchProducts = useCallback(async () => {
+    if (!batches) return;
+
+    const productBatches = batches.map(batch => {
+      return {
+        id: batch.itemId,
+        quantity: batch.quantity,
+      };
+    });
+    try {
+      const products = await Promise.all(
+        productBatches.map(async productBatch => {
+          const { data } = await axios.get(`product/${productBatch.id}`);
+          return {
+            ...data,
+            quantity: productBatch.quantity,
+          };
+        })
+      );
+      setProducts(products);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  }, [axios, batches]);
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      if (!batches) return;
-
-      const productBatches = batches.map(batch => {
-        return {
-          id: batch.itemId,
-          quantity: batch.quantity,
-        };
-      });
-      try {
-        const products = await Promise.all(
-          productBatches.map(async productBatch => {
-            const { data } = await axios.get(`product/${productBatch.id}`);
-            return {
-              ...data,
-              quantity: productBatch.quantity,
-            };
-          })
-        );
-        setProducts(products);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
     fetchProducts();
   }, [axios, batches]);
 
@@ -104,58 +108,75 @@ export const Warehouse = () => {
   };
 
   return (
-    <Paper>
-      <TableContainer style={{ maxHeight: '85vh' }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map(column => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(product => {
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={product.id}
-                  >
-                    {columns.map(column => {
-                      const value = product[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'string'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={products.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+    <div>
+      <div className={styles['header']}>
+        <Button variant="contained" onClick={() => setOpen(true)}>
+          Add Product
+        </Button>
+      </div>
+      {products.length > 0 ? (
+        <>
+          <TableContainer style={{ maxHeight: '85vh' }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map(column => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {products
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(product => {
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={product.id}
+                      >
+                        {columns.map(column => {
+                          const value = product[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {column.format && typeof value === 'string'
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={products.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
+      ) : (
+        <div>No products found</div>
+      )}
+      <AddProductToWarehouseModal
+        open={open}
+        isEditing={isEditing}
+        refetch={refetch}
+        setOpen={setOpen}
       />
-    </Paper>
+    </div>
   );
 };
