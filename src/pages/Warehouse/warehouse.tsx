@@ -14,7 +14,6 @@ import styles from './warehouse.module.css';
 import { Button } from '@mui/material';
 import { AddProductToWarehouseModal } from './components/Modal';
 import { useProductsQuery } from '../../queries/useProducts';
-import { useDeleteProductMutation } from '../../mutations/products';
 import { useDeleteBatchMutation } from '../../mutations/batches';
 
 interface Column {
@@ -122,6 +121,11 @@ export const Warehouse = () => {
     setPage(0);
   };
 
+  const handleCloseModal = () => {
+    setOpen(false);
+    setIsEditing(false);
+  };
+
   return (
     <div>
       <div className={styles['header']}>
@@ -175,7 +179,12 @@ export const Warehouse = () => {
                               <Button
                                 variant="contained"
                                 onClick={() => {
-                                  // TODO: edit product
+                                  const batch = batches?.find(
+                                    batch => batch.itemId === product.id
+                                  );
+                                  if (!batch) return;
+                                  setOpen(true);
+                                  setIsEditing(batch.id);
                                 }}
                               >
                                 Edit
@@ -219,7 +228,7 @@ export const Warehouse = () => {
           refetchBatches();
           fetchProducts();
         }}
-        setOpen={setOpen}
+        closeModal={handleCloseModal}
       />
     </div>
   );

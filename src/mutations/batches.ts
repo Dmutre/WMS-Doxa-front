@@ -13,8 +13,9 @@ interface AddBatchMutationProps {
   quantity: number;
 }
 
-type EditBatchMutationProps = AddBatchMutationProps & {
+type EditBatchMutationProps = {
   batchId: string;
+  quantity: number;
 };
 
 interface BatchResponse {
@@ -52,15 +53,8 @@ export function useEditBatchMutation({
   const axios = useAxios();
   return useMutation({
     mutationKey: ['editBatch'],
-    mutationFn: async ({
-      itemId,
-      warehouseId,
-      quantity,
-      batchId,
-    }: EditBatchMutationProps) => {
+    mutationFn: async ({ quantity, batchId }: EditBatchMutationProps) => {
       const { data } = await axios.put<BatchResponse>(`batch/${batchId}`, {
-        itemId,
-        warehouseId,
         quantity,
       });
       return data.data;

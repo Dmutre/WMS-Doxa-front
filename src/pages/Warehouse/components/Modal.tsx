@@ -11,7 +11,10 @@ import { useState } from 'react';
 import styles from './Modal.module.css';
 import { Product } from '../../../types/product';
 import { useAddProductMutation } from '../../../mutations/products';
-import { useAddBatchMutation } from '../../../mutations/batches';
+import {
+  useAddBatchMutation,
+  useEditBatchMutation,
+} from '../../../mutations/batches';
 
 export const AddProductToWarehouseModal = ({
   open,
@@ -19,14 +22,14 @@ export const AddProductToWarehouseModal = ({
   notAddedProducts,
   warehouseId,
   refetch,
-  setOpen,
+  closeModal,
 }: {
   open: boolean;
-  isEditing: false | string;
+  isEditing: string | false;
   notAddedProducts: Product[] | undefined;
   warehouseId: string | undefined;
   refetch: () => void;
-  setOpen: (open: boolean) => void;
+  closeModal: () => void;
 }) => {
   const [product, setProduct] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -46,10 +49,22 @@ export const AddProductToWarehouseModal = ({
 
   const { mutate: addProduct } = useAddProductMutation({
     onSuccess: () => {
-      setOpen(false);
       setIsCreatingAProduct(false);
       setProduct('');
       setQuantity('');
+      closeModal();
+    },
+    onError: () => {
+      alert('Something went wrong');
+    },
+  });
+
+  const { mutate: updateBatch } = useEditBatchMutation({
+    onSuccess: () => {
+      refetch();
+      setProduct('');
+      setQuantity('');
+      closeModal();
     },
     onError: () => {
       alert('Something went wrong');
@@ -58,10 +73,10 @@ export const AddProductToWarehouseModal = ({
 
   const { mutate: addBatch } = useAddBatchMutation({
     onSuccess: () => {
-      setOpen(false);
       refetch();
       setProduct('');
       setQuantity('');
+      closeModal();
     },
     onError: () => {
       alert('Something went wrong');
@@ -84,6 +99,14 @@ export const AddProductToWarehouseModal = ({
       return;
     }
 
+    if (isEditing && warehouseId) {
+      updateBatch({
+        batchId: isEditing,
+        quantity: Number(quantity),
+      });
+      return;
+    }
+
     if (!warehouseId) return;
     addBatch({
       itemId: product,
@@ -97,11 +120,11 @@ export const AddProductToWarehouseModal = ({
   };
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
+    <Modal open={open} onClose={closeModal}>
       <div
         className={styles['addWarehouseModalContainer']}
         onClick={() => {
-          setOpen(false);
+          closeModal();
           setIsCreatingAProduct(false);
         }}
       >
@@ -111,32 +134,40 @@ export const AddProductToWarehouseModal = ({
         >
           {!isCreatingAProduct && (
             <>
-              <h1>Add Product to Warehouse</h1>
-              <InputLabel id="name-label">Product</InputLabel>
-              <div className={styles['select-container']}>
-                <Select<string>
-                  className={styles['select']}
-                  labelId="name-label"
-                  name="Product"
-                  value={product}
-                  onChange={handleProductChange}
-                  label="Product"
-                >
-                  {notAddedProducts?.map(product => (
-                    <MenuItem value={product.id} key={product.id}>
-                      // TODO: add actions here:
-                      {product.name ? product.name : 'not named'}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Button
-                  onClick={() => setIsCreatingAProduct(true)}
-                  className={styles['add-button']}
-                  variant="contained"
-                >
-                  +
-                </Button>
-              </div>
+              <h1>
+                {isEditing
+                  ? 'Update Product Quantity'
+                  : 'Add Product to Warehouse'}
+              </h1>
+              {!isEditing && (
+                <>
+                  <InputLabel id="name-label">Product</InputLabel>
+                  <div className={styles['select-container']}>
+                    <Select<string>
+                      className={styles['select']}
+                      labelId="name-label"
+                      name="Product"
+                      value={product}
+                      onChange={handleProductChange}
+                      label="Product"
+                    >
+                      {notAddedProducts?.map(product => (
+                        // TODO: add actions here:
+                        <MenuItem value={product.id} key={product.id}>
+                          {product.name ? product.name : 'not named'}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Button
+                      onClick={() => setIsCreatingAProduct(true)}
+                      className={styles['add-button']}
+                      variant="contained"
+                    >
+                      +
+                    </Button>
+                  </div>
+                </>
+              )}
               <TextField
                 name="Quantity"
                 label="Quantity"
