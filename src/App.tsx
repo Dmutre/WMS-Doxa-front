@@ -1,9 +1,9 @@
 import { Outlet, useNavigate } from 'react-router-dom';
-import styles from './App.module.css';
 import { Sidebar } from './components/Sidebar/Sidebar';
 import { useAuth } from './stores/auth';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
+import styles from './App.module.css';
 
 export const App = () => {
   const { isAuth, login } = useAuth();
