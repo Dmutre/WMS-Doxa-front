@@ -9,19 +9,20 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { useRolesQuery } from '../../../queries/useRoles';
+import { Link } from 'react-router-dom';
 import {
   useCreateEmployeeMutation,
   ICreateEmployeeProps,
 } from '../../../mutations/employees';
 import { toast } from 'react-toastify';
+import { useRolesQuery } from '../../../queries/useRoles';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 
 export const CreateEmployeePage = () => {
   const navigate = useNavigate();
   const client = useQueryClient();
-  const { mutateAsync: createEmployee } = useCreateEmployeeMutation({
+  const { mutate: createEmployee } = useCreateEmployeeMutation({
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey: ['employees'] });
     },
@@ -44,18 +45,9 @@ export const CreateEmployeePage = () => {
       await createEmployee(data);
       toast.success('Employee created successfully');
       navigate('/employees');
-    } catch (error: unknown) {
-      type ErrorResponse = {
-        response?: {
-          data?: {
-            message?: string[];
-          };
-        };
-      };
-
+    } catch (error: any) {
       const errorMessage =
-        (error as ErrorResponse)?.response?.data?.message?.[0] ||
-        'Failed to create employee';
+        error?.response?.data?.message || 'Failed to create employee';
       toast.error(errorMessage);
     }
   };
@@ -76,6 +68,7 @@ export const CreateEmployeePage = () => {
           padding: '2rem',
           borderRadius: '10px',
           backgroundColor: '#fff',
+          position: 'relative',
         }}
       >
         <Typography
@@ -212,6 +205,15 @@ export const CreateEmployeePage = () => {
           </FormControl>
           <Button type="submit" variant="contained" color="primary">
             Create Employee
+          </Button>
+          <Button
+            type="button"
+            variant="outlined"
+            color="primary"
+            component={Link}
+            to="/employees"
+          >
+            Cancel
           </Button>
         </form>
       </Paper>
