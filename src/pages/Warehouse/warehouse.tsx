@@ -64,8 +64,6 @@ export const Warehouse = () => {
     []
   );
   const [open, setOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isEditing, setIsEditing] = useState<string | false>(false);
 
   const { data: batches, refetch: refetchBatches } = useBatchesQuery({
     warehouseId,
@@ -213,7 +211,7 @@ export const Warehouse = () => {
       )}
       <AddProductToWarehouseModal
         open={open}
-        isEditing={isEditing}
+        isEditing={false}
         notAddedProducts={notAddedProducts}
         warehouseId={warehouseId}
         refetch={async () => {
