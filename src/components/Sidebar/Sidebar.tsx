@@ -26,7 +26,7 @@ export const Sidebar = () => {
         <WarehouseIcon style={{ padding: '0px' }} />
         Warehouses
       </NavLink>
-      <NavLink to={'employees'} className={navLinkClassName}>
+      <NavLink to={'/employees'} className={navLinkClassName}>
         <PeopleIcon style={{ padding: '0px' }} />
         Employees
       </NavLink>

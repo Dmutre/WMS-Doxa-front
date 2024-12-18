@@ -12,7 +12,7 @@ import {
 import { EmployeesTableRow } from './components/EmployeesTableRow';
 import styles from './EmployeesTable.module.css';
 import { useEmployeesQuery } from '../../../../../queries/useEmployees';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const EmployeesTable = () => {
   const [page, setPage] = useState(0);
@@ -21,6 +21,19 @@ export const EmployeesTable = () => {
     page: page + 1,
     pageSize: pageSize,
   });
+
+  const [showSkeleton, setShowSkeleton] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading) {
+      const timer = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setShowSkeleton(true);
+    }
+  }, [isLoading]);
 
   const handleChangePage = (newPage: number) => {
     setPage(newPage);
@@ -34,7 +47,7 @@ export const EmployeesTable = () => {
     setPage(0);
   };
 
-  if (isLoading) {
+  if (showSkeleton) {
     return (
       <div
         style={{
@@ -43,13 +56,9 @@ export const EmployeesTable = () => {
           gap: '1rem',
         }}
       >
-        <Skeleton variant="rounded" animation="wave" height={50} />
-        <Skeleton variant="rounded" animation="wave" height={50} />
-        <Skeleton variant="rounded" animation="wave" height={50} />
-        <Skeleton variant="rounded" animation="wave" height={50} />
-        <Skeleton variant="rounded" animation="wave" height={50} />
-        <Skeleton variant="rounded" animation="wave" height={50} />
-        <Skeleton variant="rounded" animation="wave" height={50} />
+        {Array.from({ length: 7 }).map((_, index) => (
+          <Skeleton key={index} variant="rounded" animation="wave" height={50} />
+        ))}
       </div>
     );
   }
