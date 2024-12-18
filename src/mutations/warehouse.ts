@@ -4,7 +4,7 @@ import { Warehouse } from '../types/warehouse';
 
 interface WarehouseMutationProps {
   onSuccess?: (data: Warehouse | void) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }
 
 interface AddWarehouseMutationProps {

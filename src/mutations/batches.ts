@@ -4,7 +4,7 @@ import { Batch } from '../types/batch';
 
 interface BatchMutationProps {
   onSuccess?: (data: Batch | void) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }
 
 interface AddBatchMutationProps {

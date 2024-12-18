@@ -4,7 +4,7 @@ import { Product } from '../types/product';
 
 interface ProductMutationProps {
   onSuccess?: (data: Product | void) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }
 
 interface AddProductMutationProps {

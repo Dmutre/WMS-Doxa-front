@@ -14,7 +14,6 @@ import styles from './warehouse.module.css';
 import { Button } from '@mui/material';
 import { AddProductToWarehouseModal } from './components/Modal';
 import { useProductsQuery } from '../../queries/useProducts';
-import { useDeleteProductMutation } from '../../mutations/products';
 import { useDeleteBatchMutation } from '../../mutations/batches';
 
 interface Column {
@@ -65,6 +64,7 @@ export const Warehouse = () => {
     []
   );
   const [open, setOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isEditing, setIsEditing] = useState<string | false>(false);
 
   const { data: batches, refetch: refetchBatches } = useBatchesQuery({
@@ -73,8 +73,8 @@ export const Warehouse = () => {
   const { data: allProducts } = useProductsQuery({ enabled: open });
 
   const { mutate: deleteBatch } = useDeleteBatchMutation({
-    onSuccess: () => {
-      refetchBatches();
+    onSuccess: async () => {
+      await refetchBatches();
     },
     onError: () => {
       alert('Something went wrong');
@@ -99,7 +99,7 @@ export const Warehouse = () => {
 
       const fetchedProducts = await Promise.all(
         productBatches.map(async ({ id, quantity }) => {
-          const { data } = await axios.get(`item/${id}`);
+          const { data } = await axios.get<Product>(`item/${id}`);
           return { ...data, quantity };
         })
       );
@@ -111,7 +111,8 @@ export const Warehouse = () => {
   }, [axios, batches]);
 
   useEffect(() => {
-    fetchProducts();
+    void fetchProducts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [batches]);
 
   const handleChangePage = (_: unknown, newPage: number) => setPage(newPage);
@@ -215,9 +216,9 @@ export const Warehouse = () => {
         isEditing={isEditing}
         notAddedProducts={notAddedProducts}
         warehouseId={warehouseId}
-        refetch={() => {
-          refetchBatches();
-          fetchProducts();
+        refetch={async () => {
+          await refetchBatches();
+          await fetchProducts();
         }}
         setOpen={setOpen}
       />

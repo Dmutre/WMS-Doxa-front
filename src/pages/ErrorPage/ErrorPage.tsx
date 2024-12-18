@@ -9,7 +9,6 @@ export const ErrorPage = () => {
         height: '100vh',
         textAlign: 'center',
         color: '#333',
-        backgroundColor: '#f8d7da',
       }}
     >
       <h1>Oops!</h1>

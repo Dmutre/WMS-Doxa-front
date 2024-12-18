@@ -12,22 +12,25 @@ export const LoginForm = () => {
   const axios = useAxios();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { data } = await axios('auth/login', {
+    const response = await axios<{ token: string }>('auth/login', {
       method: 'POST',
       data: {
         email: email,
         password: password,
       },
     });
-    login(data.token);
-    localStorage.setItem('accessToken', data.token);
+    login(response.data.token);
+    localStorage.setItem('accessToken', response.data.token);
     navigate('/warehouses', { replace: true });
   };
 
   return (
-    <form className={styles['form-container']}>
+    <form
+      className={styles['form-container']}
+      onSubmit={e => e.preventDefault()}
+    >
       <span className={styles['form-title']}>Welcome Back</span>
       <TextField
         name="email"
