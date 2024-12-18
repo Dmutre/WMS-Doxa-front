@@ -74,8 +74,12 @@ export const Warehouse = () => {
     onSuccess: async () => {
       await refetchBatches();
     },
-    onError: () => {
-      alert('Something went wrong');
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        alert(`Something went wrong: ${error.message}`);
+      } else {
+        alert('Something went wrong');
+      }
     },
   });
 
@@ -103,8 +107,12 @@ export const Warehouse = () => {
       );
 
       setProducts(fetchedProducts);
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(`Failed to fetch products: ${error.message}`);
+      } else {
+        console.error('Failed to fetch products');
+      }
     }
   }, [axios, batches]);
 
