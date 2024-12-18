@@ -3,6 +3,7 @@ import styles from './App.module.css';
 import { Sidebar } from './components/Sidebar/Sidebar';
 import { useAuth } from './stores/auth';
 import { useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 export const App = () => {
   const { isAuth, login } = useAuth();
@@ -19,6 +20,7 @@ export const App = () => {
 
   return (
     <div className={styles['app-container']}>
+      <ToastContainer />
       {isAuth ? (
         <>
           <Sidebar />

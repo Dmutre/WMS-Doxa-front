@@ -42,7 +42,7 @@ export default tseslint.config(
           ignoreRegExpLiterals: true,
         },
       ],
-      '@typescript-eslint/no-misused-promises': 'none',
+      '@typescript-eslint/no-misused-promises': 'off',
     },
   }
 );
