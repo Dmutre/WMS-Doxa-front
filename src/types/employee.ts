@@ -1,15 +1,15 @@
 export interface EmployeesDto {
-  data: EmployeeDto[];
+  data: Employee[];
   total: number;
 }
 
-export interface EmployeeDto {
+export interface Employee {
   id: string;
   roleId: string;
   firstName: string;
   lastName: string;
   email: string;
-  status: string;
+  status: USER_STATUS;
   phone: string;
   birthDate: string;
   createdAt: string;
@@ -23,4 +23,10 @@ interface Role {
   createdAt: string;
   updatedAt: string;
   isPreset: boolean;
+}
+
+export enum USER_STATUS {
+  ACTIVE = 'active',
+  PASSIVE = 'passive',
+  FIRED = 'fired',
 }

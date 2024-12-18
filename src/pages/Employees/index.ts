@@ -1,2 +1,2 @@
-export { Employees } from './employees';
-export { employeesLoader } from './employeesLoader';
+export { Employees } from './viewEmployees';
+export { CreateEmployeePage } from './createEmployee';
