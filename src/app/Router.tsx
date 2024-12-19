@@ -5,7 +5,11 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { Warehouses } from '../pages/Warehouses/warehouses';
-import { Employees, CreateEmployeePage } from '../pages/Employees';
+import {
+  Employees,
+  CreateEmployeePage,
+  EmployeeTasksPage,
+} from '../pages/Employees';
 import { Warehouse } from '../pages/Warehouse/warehouse';
 import { App } from '../App';
 import { Login } from '../pages/Login';
@@ -15,6 +19,8 @@ const routes = createRoutesFromElements(
   <Route path="/" element={<App />} errorElement={<ErrorPage />}>
     <Route index element={<Navigate to="/employees" />} />
     <Route path="employees/create" element={<CreateEmployeePage />} />
+    <Route path="employees/:employeeId" element={<EmployeeTasksPage />} />
+
     <Route path="login" element={<Login />} />
     <Route path="employees" element={<Employees />} />
     <Route>

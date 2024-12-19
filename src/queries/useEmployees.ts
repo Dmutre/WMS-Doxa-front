@@ -31,3 +31,14 @@ export const useEmployeesQuery = (params: EmployeesQueryProps) => {
     },
   });
 };
+
+export const useEmployeeByIdQuery = (id: string) => {
+  const axios = useAxios();
+  return useQuery({
+    queryKey: ['employee', id],
+    queryFn: async () => {
+      const { data } = await axios.get<Employee>(`users/${id}`);
+      return data;
+    },
+  });
+};
