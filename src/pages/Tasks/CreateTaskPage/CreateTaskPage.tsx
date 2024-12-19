@@ -60,6 +60,7 @@ export const CreateTaskPage = () => {
           ...data,
           assigneeId: employeeId as string,
           reporterId: me.id,
+          estimate: data.estimate * 60 * 60 * 1000,
         };
         createTask(request);
       } catch (error) {
