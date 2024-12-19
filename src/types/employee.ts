@@ -12,8 +12,8 @@ export interface Employee {
   status: USER_STATUS;
   phone: string;
   birthDate: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   role: Role;
 }
 

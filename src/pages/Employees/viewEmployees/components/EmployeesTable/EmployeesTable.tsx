@@ -57,7 +57,12 @@ export const EmployeesTable = () => {
         }}
       >
         {Array.from({ length: 7 }).map((_, index) => (
-          <Skeleton key={index} variant="rounded" animation="wave" height={50} />
+          <Skeleton
+            key={index}
+            variant="rounded"
+            animation="wave"
+            height={50}
+          />
         ))}
       </div>
     );
@@ -83,6 +88,7 @@ export const EmployeesTable = () => {
               data.data.map(item => {
                 return (
                   <EmployeesTableRow
+                    id={item.id}
                     key={item.id}
                     firstName={item.firstName}
                     lastName={item.lastName}
