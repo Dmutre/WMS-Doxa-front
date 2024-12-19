@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+// TODO: change this to app's main URL
 const MAIN_URL = 'http://localhost:3500/';
 
 test('correct UI test', async ({ page }) => {
