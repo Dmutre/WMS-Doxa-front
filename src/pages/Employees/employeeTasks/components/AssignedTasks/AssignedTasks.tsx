@@ -17,6 +17,7 @@ import { useTasksQuery } from '../../../../../queries/useTasks';
 import { useDeleteTaskMutation } from '../../../../../mutations/tasks';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { convertMillisecondsToHours } from '../../../../../utils/utils';
 
 interface AssignedTasksProps {
   employeeId: string;
@@ -123,7 +124,7 @@ export const AssignedTasks: React.FC<AssignedTasksProps> = ({
               <TableCell>Task Title</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>Due Date</TableCell>
-              <TableCell>Estimate</TableCell>
+              <TableCell>Estimate (Hrs)</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -133,12 +134,22 @@ export const AssignedTasks: React.FC<AssignedTasksProps> = ({
                 <TableRow key={task.id} hover sx={{ cursor: 'pointer' }}>
                   <TableCell>{task.title}</TableCell>
                   <TableCell>
-                    {new Date(task.startDate).toLocaleString()}
+                    {new Intl.DateTimeFormat('en-GB', {
+                      dateStyle: 'long',
+                      timeStyle: 'short',
+                      timeZone: 'UTC',
+                    }).format(new Date(task.startDate))}
                   </TableCell>
                   <TableCell>
-                    {new Date(task.dueDate).toLocaleString()}
+                    {new Intl.DateTimeFormat('en-GB', {
+                      dateStyle: 'long',
+                      timeStyle: 'short',
+                      timeZone: 'UTC',
+                    }).format(new Date(task.dueDate))}
                   </TableCell>
-                  <TableCell>{task.estimate}</TableCell>
+                  <TableCell>
+                    {convertMillisecondsToHours(task.estimate)}
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={() => onDelete(task.id)}>
                       <DeleteIcon />
