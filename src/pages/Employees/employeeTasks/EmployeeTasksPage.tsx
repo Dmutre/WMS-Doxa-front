@@ -4,10 +4,6 @@ import { Button } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { AssignedTasks } from './components/AssignedTasks';
 
-const handleAssignNewTask = () => {
-  console.log('Assigning a new task...');
-};
-
 export const EmployeeTasksPage = () => {
   const { employeeId } = useParams();
   const navigate = useNavigate();
@@ -40,7 +36,7 @@ export const EmployeeTasksPage = () => {
         </div>
 
         <AssignedTasks
-          onAssignNewTask={handleAssignNewTask}
+          onAssignNewTask={() => navigate('create-task')}
           employeeId={employeeId}
         />
       </div>

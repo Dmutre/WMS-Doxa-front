@@ -10,6 +10,7 @@ import {
   CreateEmployeePage,
   EmployeeTasksPage,
 } from '../pages/Employees';
+import { CreateTaskPage } from '../pages/Tasks';
 import { Warehouse } from '../pages/Warehouse/warehouse';
 import { App } from '../App';
 import { Login } from '../pages/Login';
@@ -20,6 +21,8 @@ const routes = createRoutesFromElements(
     <Route index element={<Navigate to="/employees" />} />
     <Route path="employees/create" element={<CreateEmployeePage />} />
     <Route path="employees/:employeeId" element={<EmployeeTasksPage />} />
+
+    <Route path="employees/:employeeId/create-task" element={<CreateTaskPage />} />
 
     <Route path="login" element={<Login />} />
     <Route path="employees" element={<Employees />} />
