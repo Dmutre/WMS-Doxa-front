@@ -83,7 +83,7 @@ export const AddProductToWarehouseModal = ({
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (isCreatingAProduct) {
       addProduct({
         name,
