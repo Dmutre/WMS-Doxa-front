@@ -1,10 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-// TODO: change this to app's main URL
-const MAIN_URL = 'http://localhost:3500/';
-
 test('correct UI test', async ({ page }) => {
-  await page.goto(MAIN_URL);
+  await page.goto('/');
   await expect(page.getByText('Welcome Back')).toBeVisible();
   await page.getByRole('button', { name: 'Login' }).click();
   await expect(page.getByText('WMS Doxa')).toBeVisible();

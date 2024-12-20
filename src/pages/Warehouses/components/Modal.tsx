@@ -45,7 +45,7 @@ export const WarehouseModal = ({
     },
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (isEditing) {
       editWarehouse({
         name,

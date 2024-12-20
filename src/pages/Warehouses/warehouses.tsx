@@ -10,22 +10,22 @@ export const Warehouses = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<string | false>(false);
   const { mutate: deleteWarehouse } = useDeleteWarehouseMutation({
-    onSuccess: () => {
-      refetch();
+    onSuccess: async () => {
+      await refetch();
     },
     onError: () => {
       alert('Something went wrong');
     },
   });
 
-  const handleOpenCreateWarehouseModal = () => {
-    refetch();
+  const handleOpenCreateWarehouseModal = async () => {
+    await refetch();
     setOpen(true);
     setIsEditing(false);
   };
 
-  const handleOpenEditWarehouseModal = (warehouseId: string) => {
-    refetch();
+  const handleOpenEditWarehouseModal = async (warehouseId: string) => {
+    await refetch();
     setOpen(true);
     setIsEditing(warehouseId);
   };
