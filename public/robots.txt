@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /search
+Disallow: /search?*
+Disallow: /login
+
+User-Agent: AdsBot-Google
+Disallow: /search
+Disallow: /search?*

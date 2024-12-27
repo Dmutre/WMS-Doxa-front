@@ -40,7 +40,6 @@ export const CreateEmployeePage = () => {
   } = useForm<ICreateEmployeeProps>();
 
   const onSubmit = async (data: ICreateEmployeeProps) => {
-    console.log('submitting', data);
     try {
       await createEmployee(data);
       toast.success('Employee created successfully');

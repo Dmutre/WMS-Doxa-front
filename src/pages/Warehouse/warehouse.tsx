@@ -15,6 +15,7 @@ import { Button } from '@mui/material';
 import { AddProductToWarehouseModal } from './components/Modal';
 import { useProductsQuery } from '../../queries/useProducts';
 import { useDeleteBatchMutation } from '../../mutations/batches';
+import { toast } from 'react-toastify';
 
 interface Column {
   id: 'name' | 'quantity' | 'barcode' | 'description' | 'actions';
@@ -104,8 +105,8 @@ export const Warehouse = () => {
       );
 
       setProducts(fetchedProducts);
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    } catch {
+      toast.error('Failed to fetch products');
     }
   }, [axios, batches]);
 
