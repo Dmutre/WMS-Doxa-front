@@ -63,8 +63,8 @@ export const CreateTaskPage = () => {
           estimate: data.estimate * 60 * 60 * 1000,
         };
         createTask(request);
-      } catch (error) {
-        console.error(error);
+      } catch {
+        toast.error('Failed to create task');
       }
     }
   };

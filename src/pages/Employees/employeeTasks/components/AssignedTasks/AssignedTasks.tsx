@@ -151,7 +151,10 @@ export const AssignedTasks: React.FC<AssignedTasksProps> = ({
                     {convertMillisecondsToHours(task.estimate)}
                   </TableCell>
                   <TableCell>
-                    <IconButton onClick={() => onDelete(task.id)}>
+                    <IconButton
+                      onClick={() => onDelete(task.id)}
+                      aria-label={`Delete task ${task.title}`}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

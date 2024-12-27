@@ -24,7 +24,7 @@ export const EmployeeTasksPage = () => {
       <Button
         variant="text"
         onClick={() => navigate(-1)}
-        sx={{ alignSelf: 'flex-start' }}
+        sx={{ alignSelf: 'flex-start', color: 'black' }}
       >
         <ArrowBack />
         Previous Page

@@ -52,7 +52,6 @@ export function useBatchesQuery({
           pageSize,
         },
       });
-      console.log('data2', data);
       return data.data;
     },
     enabled,
